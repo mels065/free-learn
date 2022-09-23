@@ -1,5 +1,8 @@
 import express from 'express';
 import helmet from 'helmet';
+
+import apolloServer from './apolloServer';
+
 const app = express();
 const port = 3000;
 
@@ -15,6 +18,11 @@ app.use(helmet.contentSecurityPolicy({
     }
 }));
 
-app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`);
-});
+apolloServer.start()
+    .then(() => {
+        apolloServer.applyMiddleware({ app });
+
+        app.listen({ port }, () => {
+            console.log(`Server is listening on port ${port}`);
+        });
+    });
